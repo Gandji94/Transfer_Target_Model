@@ -1,0 +1,55 @@
+[0m16:04:47.647955 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000127A3BDED10>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000127A3BDF150>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000127A3989490>]}
+
+
+============================== 16:04:47.667044 | 6e84acff-4840-49f6-bc10-c07136dc2b62 ==============================
+[0m16:04:47.667044 [info ] [MainThread]: Running with dbt=1.10.9
+[0m16:04:47.668046 [debug] [MainThread]: running dbt with arguments {'partial_parse': 'True', 'write_json': 'True', 'send_anonymous_usage_stats': 'True', 'warn_error': 'None', 'cache_selected_only': 'False', 'target_path': 'None', 'use_colors': 'True', 'invocation_command': 'dbt init player_stats', 'log_format': 'default', 'version_check': 'True', 'introspect': 'True', 'debug': 'False', 'printer_width': '80', 'fail_fast': 'False', 'no_print': 'None', 'use_experimental_parser': 'False', 'quiet': 'False', 'empty': 'None', 'log_cache_events': 'False', 'log_path': 'logs', 'indirect_selection': 'eager', 'profiles_dir': 'C:\\Users\\gandj\\.dbt', 'static_parser': 'True', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])'}
+[0m16:04:48.003791 [debug] [MainThread]: Starter project path: C:\Users\gandj\OneDrive\Desktop\Case_Study\Football\Transfers\Transfer_Target_Model\venv\Lib\site-packages\dbt\include\starter_project
+[0m16:04:48.043951 [info ] [MainThread]: 
+Your new dbt project "player_stats" was created!
+
+For more information on how to configure the profiles.yml file,
+please consult the dbt documentation here:
+
+  https://docs.getdbt.com/docs/configure-your-profile
+
+One more thing:
+
+Need help? Don't hesitate to reach out to us via GitHub issues or on Slack:
+
+  https://community.getdbt.com/
+
+Happy modeling!
+
+[0m16:04:48.045951 [info ] [MainThread]: Setting up your profile.
+[0m16:04:53.764662 [error] [MainThread]: Encountered an error:
+
+[0m16:04:53.767638 [error] [MainThread]: Traceback (most recent call last):
+  File "C:\Users\gandj\OneDrive\Desktop\Case_Study\Football\Transfers\Transfer_Target_Model\venv\Lib\site-packages\dbt\cli\requires.py", line 178, in wrapper
+    result, success = func(*args, **kwargs)
+                      ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\gandj\OneDrive\Desktop\Case_Study\Football\Transfers\Transfer_Target_Model\venv\Lib\site-packages\dbt\cli\requires.py", line 128, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\gandj\OneDrive\Desktop\Case_Study\Football\Transfers\Transfer_Target_Model\venv\Lib\site-packages\dbt\cli\main.py", line 483, in init
+    results = task.run()
+              ^^^^^^^^^^
+  File "C:\Users\gandj\OneDrive\Desktop\Case_Study\Football\Transfers\Transfer_Target_Model\venv\Lib\site-packages\dbt\task\init.py", line 346, in run
+    self.setup_profile(profile_name)
+  File "C:\Users\gandj\OneDrive\Desktop\Case_Study\Football\Transfers\Transfer_Target_Model\venv\Lib\site-packages\dbt\task\init.py", line 261, in setup_profile
+    adapter = self.ask_for_adapter_choice()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\gandj\OneDrive\Desktop\Case_Study\Football\Transfers\Transfer_Target_Model\venv\Lib\site-packages\dbt\task\init.py", line 242, in ask_for_adapter_choice
+    numeric_choice = click.prompt(prompt_msg, type=click.INT)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\gandj\OneDrive\Desktop\Case_Study\Football\Transfers\Transfer_Target_Model\venv\Lib\site-packages\click\termui.py", line 168, in prompt
+    value = prompt_func(prompt)
+            ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\gandj\OneDrive\Desktop\Case_Study\Football\Transfers\Transfer_Target_Model\venv\Lib\site-packages\click\termui.py", line 151, in prompt_func
+    raise Abort() from None
+click.exceptions.Abort
+
+[0m16:04:53.769650 [debug] [MainThread]: Command `dbt init` failed at 16:04:53.768653 after 6.31 seconds
+[0m16:04:53.769650 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001279CD8BE10>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000127A3C45150>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000127A3C45C10>]}
+[0m16:04:53.770649 [debug] [MainThread]: Flushing usage events
+[0m16:04:54.259781 [debug] [MainThread]: An error was encountered while trying to flush usage events

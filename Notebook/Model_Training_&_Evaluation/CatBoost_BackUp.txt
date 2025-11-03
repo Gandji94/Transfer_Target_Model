@@ -1,0 +1,122 @@
+# --- add these imports once ---
+import numpy as np
+from joblib import Parallel, delayed, Memory
+from sklearn.base import clone
+from sklearn.metrics import log_loss
+from sklearn.pipeline import Pipeline
+
+memory = Memory(location="__skcache__", verbose=0)  # cache for pipeline steps
+
+
+def _fit_one_fold(preproc, cb_params, class_weights, X_tr, y_tr, X_va, y_va, classes):
+    """Train+eval one fold with early stopping (single-threaded CatBoost)."""
+    # fit/transform preprocessing on train; transform val with same fitted preproc
+    pre = clone(preproc)
+    X_tr_t = pre.fit_transform(X_tr, y_tr)
+    X_va_t = pre.transform(X_va)
+
+    # (optional) smaller dtype = a bit faster/lighter
+    X_tr_t = np.asarray(X_tr_t, dtype=np.float32)
+    X_va_t = np.asarray(X_va_t, dtype=np.float32)
+
+    model = CatBoostClassifier(
+        **cb_params,
+        class_weights=class_weights,
+        loss_function='MultiClass',
+        thread_count=1,      # ← single-threaded model so we can parallelize folds
+        random_seed=101,
+        verbose=0
+    )
+
+    model.fit(
+        X_tr_t, y_tr,
+        eval_set=(X_va_t, y_va),
+        use_best_model=True,
+        early_stopping_rounds=50,   # you can tune to 50–100 if metric is noisy
+        verbose=0
+    )
+
+    proba = model.predict_proba(X_va_t)
+    return log_loss(y_va, proba, labels=classes)
+
+
+def objective(trial):
+    # ---- your existing search spaces ----
+    nation_tol  = trial.suggest_float('nation_tol', 0.001, 0.01)
+    club_left_tol = trial.suggest_float('club_left_tol', 0.001, 0.01)
+    league_left_tol = trial.suggest_float('league_left_tol', 0.001, 0.01)
+    feature_select_thresh = trial.suggest_float('feature_select_thresh', 1e-4, 8.5e-3)
+
+    cb_params = {
+        'iterations': trial.suggest_int('iterations', 600, 1400),
+        'depth': trial.suggest_int('depth', 5, 8),
+        'learning_rate': trial.suggest_float('learning_rate', 0.02, 0.06, log=True),
+        'min_data_in_leaf': trial.suggest_int('min_data_in_leaf', 10, 50),
+        'rsm': trial.suggest_float('rsm', 0.8, 1.0),                 # no need log=True for a tight range
+        'random_strength': trial.suggest_float('random_strength', 1.0, 8.0, log=True),
+        'l2_leaf_reg': trial.suggest_float('l2_leaf_reg', 1.0, 10.0, log=True),
+        'max_ctr_complexity': trial.suggest_int('max_ctr_complexity', 2, 6),
+        'bootstrap_type': trial.suggest_categorical('bootstrap_type', ['Bernoulli', 'Bayesian']),
+        'grow_policy': 'SymmetricTree',
+        'od_wait': trial.suggest_int('od_wait', 100, 200),           # used only with CatBoost’s OD; harmless here
+    }
+    if cb_params['bootstrap_type'] == 'Bernoulli':
+        cb_params['subsample'] = trial.suggest_float('subsample', 0.7, 0.95)
+    else:  # Bayesian
+        cb_params['bagging_temperature'] = trial.suggest_float('bagging_temperature', 0.3, 1.5)
+
+    # --- preprocessing-only pipeline (cached) ---
+    preproc = Pipeline(
+        steps=[
+            ('Nation Binning', RareLabelEncoder(variables='Nation', tol=nation_tol)),
+            ('Club_Left Binning', RareLabelEncoder(variables='Club_Left', tol=club_left_tol)),
+            ('League_Left Binning', RareLabelEncoder(variables='League_Left', tol=league_left_tol)),
+            ('One-Hot Encoder', OneHotEncoder(variables=['Age','Pos'], drop_last=True)),
+            ('Class Target Encoding', CatBoostEncoder(cols=['Nation','Club_Left','League_Left'], random_state=101)),
+            ('Feature Selector Classification', Feature_Selector_Classification(threshold=feature_select_thresh, random_state=101)),
+        ],
+        memory=memory
+    )
+
+    # class weights must be a list aligned to classes order
+    classes = np.unique(y_train)
+    # if you have a dict {class_label: weight}, convert it:
+    # class_weights_list = [class_weight_dict[c] for c in classes]
+    class_weights_list = class_weights  # if you already built a list in label order
+
+    # --- run folds in parallel (across folds) ---
+    n_jobs_folds = cv.get_n_splits()  # typically 5; you can also use min(os.cpu_count(), cv.get_n_splits())
+    fold_scores = Parallel(n_jobs=-1, prefer="processes")(
+        delayed(_fit_one_fold)(
+            preproc, cb_params, class_weights_list,
+            X_train.iloc[tr], y_train.iloc[tr],
+            X_train.iloc[va], y_train.iloc[va],
+            classes
+        )
+        for tr, va in cv.split(X_train, y_train, groups_train)
+    )
+
+    return float(np.mean(fold_scores))
+
+
+# ---- your study run (unchanged) ----
+study = optuna.create_study(direction='minimize', sampler=TPESampler(seed=101), pruner=SuccessiveHalvingPruner())
+start_time = time.time()
+study.optimize(objective, n_trials=2)
+end_time = time.time()
+
+print(f'Best Params: {study.best_params}')
+print(f'Best Score: {study.best_value}')
+print(f'Run Time: {(end_time - start_time)/60:.2f} Minutes')
+
+plt.figure(figsize=(10, 6))
+optuna_matplotlib.plot_optimization_history(study)
+plt.title("Optimization History")
+plt.show()
+
+optuna_matplotlib.plot_param_importances(study)
+plt.title("Parameter Importance")
+plt.show()
+
+plt.rcdefaults()
+plt.style.use("default")

@@ -1,0 +1,27 @@
+#virtual environment
+venv/
+.env/
+
+#jupyter notebook checkpoints
+.ipynb_checkpoints/
+
+# Byte-compiled / cache files
+__pycache__/
+*.py[cod]
+
+#IDE
+.vscode/
+.idea/
+
+#NoteBook because it is too big
+Notebook/Model_Training_&_Evaluation/Model_Training_&_Evaluation_w_Rumors.ipynb
+
+#Models too big
+Models\Final_Model\Multiclass\multiclass_final_model_3_11_2025.pkl
+
+#Removing big lit_sql & ignoring all databases
+*.sqlite
+*.sqlite3
+*.db
+*.duckdb
+*.duckdb.wal
