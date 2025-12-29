@@ -1,0 +1,139 @@
+
+version: 2
+
+models:
+  - name: dp_binary_pred
+    description: "View contains probability values, if a player belongs/will join a top or non-top league."
+    columns:
+      - name: Player_ID
+        description: "The primary key for this view"
+        data_type: Int
+        tests:
+          - not_null
+      - name: Player
+        description: "Name of the player"
+        data_type: varchar
+        tests:
+          - not_null
+      - name: top_league
+        description: "Probability of joining/staying in a Top-League"
+        data_type: DOUBLE
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+              max_value: 1
+              strictly: false
+      - name: non_top_league
+        description: "Probability of joining/staying in a Non-Top-League"
+        data_type: DOUBLE
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+                min_value: 0
+                max_value: 1
+                strictly: false
+      - name: creation_timestamp
+        description: "Creation date of the data"
+        data_type: TIMESTAMP
+        tests:
+          - not_null
+
+  - name: dp_multiclass_pred
+    description: "A starter dbt model"
+    columns:
+      - name: Player_ID
+        description: "The primary key for this view"
+        data_type: Int
+        tests:
+          - not_null
+      - name: Player
+        data_type: varchar
+        description: "Name of the player"
+        tests:
+          - not_null
+      - name: bundesliga
+        description: "Probability of joining/staying in the Bundesliga"
+        data_type: DOUBLE
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+              max_value: 1
+              strictly: false
+      - name: laliga
+        description: "Probability of joining/staying in LaLiga"
+        data_type: DOUBLE
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+              max_value: 1
+              strictly: false
+      - name: ligue_1
+        description: "Probability of joining/staying in Ligue 1"
+        data_type: DOUBLE
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+              max_value: 1
+              strictly: false
+      - name: premier_league
+        description: "Probability of joining/staying in the Premier League"
+        data_type: DOUBLE
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+              max_value: 1
+              strictly: false
+      - name: serie_a
+        description: "Probability of joining/staying in Serie A"
+        data_type: DOUBLE
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+              max_value: 1
+              strictly: false
+      - name: creation_timestamp
+        description: "Creation date of the data"
+        tests:
+          - not_null
+  
+  - name: dp_combined_pred
+    description: "A starter dbt model"
+    columns:
+      - name: Player_ID
+        description: "The primary key for this view"
+        data_type: Int
+        tests:
+          - not_null
+      - name: Player
+        data_type: varchar
+        description: "Name of the player"
+        tests:
+          - not_null
+      - name: bundesliga
+        description: "Probability of joining/staying in the Bundesliga"
+        data_type: DOUBLE
+        tests:
+          - not_null
+      - name: laliga
+        description: "Probability of joining/staying in LaLiga"
+        data_type: DOUBLE
+        tests:
+          - not_null
+      - name: ligue_1
+        description: "Probability of joining/staying in Ligue 1"
+        data_type: DOUBLE
+        tests:
+          - not_null
+      - name: premier_league
+        description: "Probability of joining/staying in the Premier League"
+        data_type: DOUBLE
+        tests:
+          - not_null
+      - name: serie_a
+        description: "Probability of joining/staying in Serie A"
+        data_type: DOUBLE
+        tests:
+          - not_null
+      - name: creation_timestamp
+        description: "Creation date of the data"
+        tests:
+          - not_null

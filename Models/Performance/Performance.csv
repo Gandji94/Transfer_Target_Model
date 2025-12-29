@@ -1,5 +1,0 @@
-,Unnamed: 0.2,Unnamed: 0.1,Unnamed: 0,Log Loss,Macro F1-Score,Run Time in Minutes
-0,0,0,Logistic Regression,1.919026540023012,0.2974149114806463,27.04
-1,1,Logistic Regression,,1.5793589173715372,0.3432054952348153,152.19
-2,Light GBM Classification,,,1.4555518584200378,0.4196181699485077,31.92
-XGBoost Classification,,,,1.4212238873592538,0.4434916782738578,26.03

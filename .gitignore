@@ -1,25 +1,44 @@
-#virtual environment
+# Virtual environment
 venv/
 .env/
 
-#jupyter notebook checkpoints
+# Jupyter notebook checkpoints
 .ipynb_checkpoints/
 
 # Byte-compiled / cache files
 __pycache__/
 *.py[cod]
 
-#IDE
+# IDE
 .vscode/
 .idea/
 
-#NoteBook because it is too big
+# CatBoost
+Notebook/Model_Training_&_Evaluation/catboost_info
+Notebook/Model_Training_&_Evaluation/CatBoost_BackUp.txt
+
+# skcache
+Notebook/Model_Training_&_Evaluation/__skcache__
+
+# Notebook too big
 Notebook/Model_Training_&_Evaluation/Model_Training_&_Evaluation_w_Rumors.ipynb
 
-#Models too big
-Models\Final_Model\Multiclass\multiclass_final_model_3_11_2025.pkl
+# Models too big
+## Binary Model
+Models/Final_Model/Binary/best_thresh_binary.dict
+Models/Final_Model/Binary/binary_final_model_23_10_2025.pkl
+Models/Final_Model/Binary/binary_final_model_total_data_5_11_2025.pkl
+Models/Final_Model/Binary/binary_final_params_23_10_2025.dict
+Models/Final_Model/Binary/binary_model_columns.joblib
 
-#Removing big lit_sql & ignoring all databases
+## Multiclass
+Models/Final_Model/Multiclass/multiclass_final_model_8_11_2025.pkl
+Models/Final_Model/Multiclass/multiclass_final_model_total_data_8_11_2025.pkl
+Models/Final_Model/Multiclass/multiclass_final_params_8_11_2025.dict
+Models/Final_Model/Multiclass/multiclass_model_columns.joblib
+Models/Final_Model/Multiclass/multiclass_translation.dict
+
+# Removing big lite_sql & ignoring all databases
 *.sqlite
 *.sqlite3
 *.db

@@ -40,7 +40,7 @@ from urllib3.util.retry import Retry
 from copy import deepcopy
 from sklearn.utils import check_random_state
 from sklearn.base import clone
-
+import joblib
 
 #python file is in the repositroy as well => Transfers_Window
 def all_trans_window(year):
@@ -3421,25 +3421,69 @@ def brier_eval_xgb(preds, dtrain):
 # creating the input data, for predictions
 #-------------------------------------------------------------------------------------------------------------------------
 #who_is_that_player(p,cj,lj) -> slightly modified for classification, we just use player, league_joined (will be predicted) and club_joined (not relevant)
-def who_is_that_player(p):
-    df_mean_stats=pd.read_csv(r"..\..\DataSources\Processed\Player_Stats_Mean_2017_2025_test.csv").iloc[:,1:]
-    player_pred=pd.read_csv(r"..\..\DataSources\Processed\Player_Stats_Mean_2017_2025_test.csv").iloc[:,1:]
-    df_trans=pd.read_csv(r"..\..\DataSources\Processed\All_Trans_2000_2025_test.csv").iloc[:,1:]
+def who_is_that_player(player_name):
+    
+    #player_name=input('Name of the Player')
+    #manual set, here we did it for the player Nick Woltemade
+
+    df_mean_stats=pd.read_csv(r"..\DataSources\Processed\Player_Stats_Mean_2017_2025.csv").iloc[:,1:]
+    player_pred=pd.read_csv(r"..\DataSources\Processed\Player_Stats_Mean_2017_2025.csv").iloc[:,1:]
+    df_trans=pd.read_csv(r"..\DataSources\Processed\All_Trans_2000_2025.csv").iloc[:,1:]
     df_trans.drop(['Age'],axis=1,inplace=True)
+    df_cf=pd.read_csv(r"..\DataSources\Processed\Cleaned_Final_Stats.csv")
+    df_rumor=pd.read_csv(r'..\DataSources\Processed\Rumor_Overview.csv').drop(['probability_raw','page','probability_pct','club_id'],axis=1)
+    binary_columns=joblib.load('..\\Models\\Final_Model\\Binary\\binary_model_columns.joblib')
+    multiclass_columns=joblib.load('..\\Models\Final_Model\Multiclass\multiclass_model_columns.joblib')
+
     #df_trans['Transfer_Fee']=df_trans['Transfer_Fee'].apply(trans_value)
 
     df_stats=pd.merge(df_mean_stats,df_trans,on=['Player','Transfer_Window'],how='left').dropna()
     #just to get actaull transfer fees
     #df_stats=df_stats[df_stats['Transfer_Fee']!=0]
-    df_stats=df_stats.drop(['Player','Squad','League','Transfer_Fee','Born','Club_Joined','League_Joined'],axis=1)
-    player=player_pred[(player_pred['Player']==p) & (player_pred['Transfer_Window']==player_pred['Transfer_Window'].max())].copy()
+    df_stats=df_stats.drop(['Squad','League','Transfer_Fee','Born','Club_Joined','League_Joined'],axis=1)
+    #player=player_pred[(player_pred['Player']=='Aaron Hickey') & (player_pred['Transfer_Window']==player_pred['Transfer_Window'].max())].copy()
+    player_name=player_pred[(player_pred['Player']==player_name)]
+    max_date=player_name['Transfer_Window'].max()
+    player=player_name[player_name['Transfer_Window'].eq(max_date)]
     player.rename(columns={'Squad':'Club_Left','League':'League_Left'},inplace=True)
     #player['Club_Joined']=cj
     #player['League_Joined']=lj
     player['Performance_Year']=player['Transfer_Window']-1
     col_names=list(df_stats.columns)
     player=player[col_names]
-    return player
+
+    club_league_df=df_cf[['Club_Joined','League_Joined']].drop_duplicates()
+    club_league_df.rename(columns={'Club_Joined':'club_name'},inplace=True)
+
+    df_rumor['last_source_dt'] = pd.to_datetime(df_rumor['last_source_dt'], errors='coerce')
+    df_rumor['Performance_Year']=df_rumor['last_source_dt'].dt.year
+    #df_rumor['Performance_Month']=df_rumor['last_source_dt'].dt.month
+    df_rumor.drop(['last_source','last_answer','last_source_dt',],axis=1,inplace=True)
+
+    df_final=pd.merge(df_rumor,club_league_df,on='club_name',how='left')
+
+    df_rumor_agg=df_final.groupby(
+        [
+            'Player', 'Performance_Year', 'League_Joined'
+        ]
+    ).size().unstack(fill_value=0).rename(columns=lambda c: f'{c}_Rumors').reset_index().rename_axis(columns=' ')
+
+    player_final=pd.merge(player,df_rumor_agg,on=['Player','Performance_Year'],how='left').drop(['Player'],axis=1).fillna(0)
+
+    #column check between the different models (binary and multiclass)
+    if not np.array_equal(binary_columns,multiclass_columns):
+        raise ValueError('Columns do not match between binary and multiclass model')
+    else:
+        standard_columns=binary_columns
+    
+    #check if the newly created dataframe columns match match with the prerequesits for the binary and multiclass model
+    #if list(player_final.columns)!=standard_columns:
+    if not np.array_equal(list(player_final.columns),standard_columns):
+        raise ValueError('Columnes do not match!')
+    else:
+        #making sure that the generated dataframe has the same column order as the dataframe the model was trained on
+        player_final=player_final.reindex(columns=standard_columns)
+        return player_final
 
 
 #-------------------------------------------------------------------------------------------------------------------------
@@ -3984,3 +4028,53 @@ def learning_curve_weighted(
             val_scores[i,  s]  = va_score
 
     return train_sizes_abs, train_scores, val_scores
+
+#-------------------------------------------------------------------------------------------------------------
+#adding a dummy row to avoid division-by-zero error
+#-------------------------------------------------------------------------------------------------------------
+def add_missing_class_rows(df: pd.DataFrame, proba_cols, K: int):
+    """
+    Add 1 dummy row per missing target class to avoid Evidently division-by-zero
+    when a class has 0 support in `target`.
+    IMPORTANT: labels must be strings to match proba_cols.
+    """
+    present = set(df["target"].unique())          # strings
+    missing = sorted(set(proba_cols) - present, key=int)
+
+    if not missing:
+        return df
+
+    extra = []
+    for c in missing:
+        row = {col: 0.0 for col in proba_cols}
+        row[c] = 1.0
+        row["pred"] = c
+        row["target"] = c
+        extra.append(row)
+
+    return pd.concat([df, pd.DataFrame(extra)], ignore_index=True)
+
+#-------------------------------------------------------------------------------------------------------------
+#calculating the entrop of the probability
+#-------------------------------------------------------------------------------------------------------------
+def entropy_from_proba(P: np.ndarray):
+    """Shannon entropy per row. P shape = (n, K), rows sum to 1."""
+    EPS = 1e-12
+    # P: (n, K), rows sum to 1
+    P = np.clip(P, EPS, 1.0)
+    return -np.sum(P * np.log(P), axis=1)
+
+#-------------------------------------------------------------------------------------------------------------
+#calculating the entrop of the probability
+#-------------------------------------------------------------------------------------------------------------
+def max_confidence(P: np.ndarray):
+    """Max probability per row."""
+    return np.max(P, axis=1)
+
+#-------------------------------------------------------------------------------------------------------------
+#how much more confident is the model in its top class compared to its second-best class
+#-------------------------------------------------------------------------------------------------------------
+def multiclass_margin(P: np.ndarray) -> np.ndarray:
+    """p_max - p_second_max per row."""
+    sorted_p = np.sort(P, axis=1)
+    return sorted_p[:, -1] - sorted_p[:, -2]

@@ -53,3 +53,61 @@ click.exceptions.Abort
 [0m16:04:53.769650 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001279CD8BE10>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000127A3C45150>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000127A3C45C10>]}
 [0m16:04:53.770649 [debug] [MainThread]: Flushing usage events
 [0m16:04:54.259781 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m21:04:24.329559 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000023311094F50>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000023311352250>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000233113526D0>]}
+
+
+============================== 21:04:24.340368 | 6035ba33-4d9b-48ed-8dde-1dc5139fecbc ==============================
+[0m21:04:24.340368 [info ] [MainThread]: Running with dbt=1.10.9
+[0m21:04:24.340368 [debug] [MainThread]: running dbt with arguments {'partial_parse': 'True', 'static_parser': 'True', 'send_anonymous_usage_stats': 'True', 'version_check': 'True', 'cache_selected_only': 'False', 'target_path': 'None', 'use_colors': 'True', 'invocation_command': 'dbt init dbt_league_pred', 'log_format': 'default', 'warn_error': 'None', 'introspect': 'True', 'debug': 'False', 'log_cache_events': 'False', 'fail_fast': 'False', 'no_print': 'None', 'use_experimental_parser': 'False', 'empty': 'None', 'quiet': 'False', 'printer_width': '80', 'log_path': 'logs', 'indirect_selection': 'eager', 'profiles_dir': 'C:\\Users\\gandj\\.dbt', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'write_json': 'True'}
+[0m21:04:24.510601 [debug] [MainThread]: Starter project path: C:\Users\gandj\OneDrive\Desktop\Case_Study\Football\Transfers\Transfer_Target_Model\venv\Lib\site-packages\dbt\include\starter_project
+[0m21:04:24.526566 [info ] [MainThread]: 
+Your new dbt project "dbt_league_pred" was created!
+
+For more information on how to configure the profiles.yml file,
+please consult the dbt documentation here:
+
+  https://docs.getdbt.com/docs/configure-your-profile
+
+One more thing:
+
+Need help? Don't hesitate to reach out to us via GitHub issues or on Slack:
+
+  https://community.getdbt.com/
+
+Happy modeling!
+
+[0m21:04:24.527566 [info ] [MainThread]: Setting up your profile.
+[0m21:04:31.734889 [debug] [MainThread]: Command `dbt init` succeeded at 21:04:31.734484 after 7.49 seconds
+[0m21:04:31.735484 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002330A501490>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002330A500F50>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002330A5011D0>]}
+[0m21:04:31.735484 [debug] [MainThread]: Flushing usage events
+[0m21:04:32.236527 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m22:37:29.179744 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000019D53285990>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000019D572531D0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000019D57252E50>]}
+
+
+============================== 22:37:29.202758 | 8cd45cab-3517-42b0-9bbd-c090848e39cf ==============================
+[0m22:37:29.202758 [info ] [MainThread]: Running with dbt=1.10.9
+[0m22:37:29.203741 [debug] [MainThread]: running dbt with arguments {'partial_parse': 'True', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'send_anonymous_usage_stats': 'True', 'version_check': 'True', 'cache_selected_only': 'False', 'target_path': 'None', 'use_colors': 'True', 'invocation_command': 'dbt seed', 'log_format': 'default', 'warn_error': 'None', 'introspect': 'True', 'debug': 'False', 'log_cache_events': 'False', 'fail_fast': 'False', 'no_print': 'None', 'use_experimental_parser': 'False', 'printer_width': '80', 'quiet': 'False', 'empty': 'None', 'indirect_selection': 'eager', 'log_path': 'logs', 'write_json': 'True', 'static_parser': 'True', 'profiles_dir': 'C:\\Users\\gandj\\.dbt'}
+[0m22:37:29.204745 [error] [MainThread]: Encountered an error:
+Runtime Error
+  No dbt_project.yml found at expected path C:\Users\gandj\OneDrive\Desktop\Case_Study\Football\Transfers\Transfer_Target_Model\dbt_project.yml
+  Verify that each entry within packages.yml (and their transitive dependencies) contains a file named dbt_project.yml
+  
+[0m22:37:29.205742 [debug] [MainThread]: Command `dbt seed` failed at 22:37:29.205742 after 0.11 seconds
+[0m22:37:29.206766 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000019D571EC110>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000019D57277CD0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000019D57277E10>]}
+[0m22:37:29.207768 [debug] [MainThread]: Flushing usage events
+[0m22:37:29.740992 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m22:38:07.911198 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000020781AEF450>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000020781894C10>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000020781B53590>]}
+
+
+============================== 22:38:07.915234 | 75332689-ddfd-4bde-9f7a-11c6c80e04cc ==============================
+[0m22:38:07.915234 [info ] [MainThread]: Running with dbt=1.10.9
+[0m22:38:07.916146 [debug] [MainThread]: running dbt with arguments {'partial_parse': 'True', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'send_anonymous_usage_stats': 'True', 'warn_error': 'None', 'cache_selected_only': 'False', 'target_path': 'None', 'version_check': 'True', 'invocation_command': 'dbt seed', 'log_format': 'default', 'use_colors': 'True', 'introspect': 'True', 'debug': 'False', 'log_cache_events': 'False', 'fail_fast': 'False', 'no_print': 'None', 'quiet': 'False', 'use_experimental_parser': 'False', 'empty': 'None', 'printer_width': '80', 'log_path': 'logs', 'indirect_selection': 'eager', 'profiles_dir': 'C:\\Users\\gandj\\.dbt', 'static_parser': 'True', 'write_json': 'True'}
+[0m22:38:07.916146 [error] [MainThread]: Encountered an error:
+Runtime Error
+  No dbt_project.yml found at expected path C:\Users\gandj\OneDrive\Desktop\Case_Study\Football\Transfers\Transfer_Target_Model\dbt_project.yml
+  Verify that each entry within packages.yml (and their transitive dependencies) contains a file named dbt_project.yml
+  
+[0m22:38:07.918243 [debug] [MainThread]: Command `dbt seed` failed at 22:38:07.918243 after 0.09 seconds
+[0m22:38:07.919183 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000020781B75450>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000020781B77D50>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002077AE229D0>]}
+[0m22:38:07.919183 [debug] [MainThread]: Flushing usage events
+[0m22:38:08.403681 [debug] [MainThread]: An error was encountered while trying to flush usage events
