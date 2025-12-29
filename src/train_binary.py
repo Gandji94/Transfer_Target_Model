@@ -601,7 +601,7 @@ def run_binary_training():
     day=datetime.date.today().day
 
     #saving the final dictionary, with all the important/needed values for the model pipeline
-    joblib.dump(final_params,MODEL_PARAMS_MODELS_BINARY / f'binary_final_params_{day}_{month}_{year}.dict')
+    joblib.dump(final_params,MODEL_PARAMS_MODELS_BINARY / f'binary_final_params.dict')
 
     #getting the, breaking down groups_train_all into group_val, groups_train_all has already been broken down into group_fit & finally into group_val
     ##why can't we just use groups_train_all? Due to the index splits for group_fit and group_val

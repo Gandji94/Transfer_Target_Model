@@ -617,7 +617,7 @@ def run_multiclass_training():
     day=datetime.date.today().day
 
     #saving the final dictionary, with all the important/needed values for the model pipeline
-    joblib.dump(final_params, MODEL_PARAMS_MODELS_MULTI / f'multiclass_final_params_{day}_{month}_{year}.dict')
+    joblib.dump(final_params, MODEL_PARAMS_MODELS_MULTI / f'multiclass_final_params.dict')
 
     #getting the, breaking down groups_train_all into group_val, groups_train_all has already been broken down into group_fit & finally into group_val
     ##why can't we just use groups_train_all? Due to the index splits for group_fit and group_val
@@ -782,7 +782,7 @@ def run_multiclass_training():
     logging.info(f"Top-2: {acc3}")
     logging.info(f"Top-3: {acc5}\n")
 
-    joblib.dump(ccv, MODEL_PARAMS_MODELS_MULTI / f'multiclass_final_model_{day}_{month}_{year}.pkl')
+    joblib.dump(ccv, MODEL_PARAMS_MODELS_MULTI / f'multiclass_final_model.pkl')
 
     label_to_code = {lbl: i for i, lbl in enumerate(le.classes_)}
     joblib.dump(label_to_code, MODEL_PARAMS_MODELS_MULTI / 'multiclass_translation.dict')
